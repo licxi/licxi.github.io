@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>商品详情</title>
+    <title >商品详情</title>
     <link href="//cdn.staticfile.org/layui/2.8.10/css/layui.css" rel="stylesheet">
     <style>
         .carousel-full-width-image {
@@ -29,24 +29,15 @@
         <div class="layui-logo" style="width: 100px">商品详情</div>
     </div>
     <div class="layui-body" style="left: 0;width: 100%">
-        <!-- HTML Content -->
+        <!-- 轮播图 -->
         <div class="layui-carousel" id="ID-carousel-demo-image">
-            <div carousel-item>
-                <div><img src="https://unpkg.com/outeres/demo/carousel/720x360-1.jpg"
-                          class="carousel-full-width-image"></div>
-                <div><img src="https://unpkg.com/outeres/demo/carousel/720x360-2.jpg" class="carousel-full-width-image">
-                </div>
-                <div><img src="https://unpkg.com/outeres/demo/carousel/720x360-3.jpg" class="carousel-full-width-image">
-                </div>
-                <div><img src="https://unpkg.com/outeres/demo/carousel/720x360-4.jpg" class="carousel-full-width-image">
-                </div>
-                <div><img src="https://unpkg.com/outeres/demo/carousel/720x360-5.jpg" class="carousel-full-width-image">
-                </div>
+            <div carousel-item id="ID-carousel-image-list">
+
             </div>
         </div>
         <div style="padding: 16px">
-            <h2>price：<span style="color: red">$3.1</span></h2>
-            <h1>商品名称</h1>
+            <h2>price：<span style="color: red" id="ID-price"></span></h2>
+            <h1 id="ID-title"></h1>
         </div>
         <div>
             <fieldset class="layui-elem-field layui-field-title">
@@ -55,8 +46,8 @@
         </div>
 
         <div style="padding: 16px">
-            <p>
-                商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述商品描述
+            <p id="ID-detail">
+
             </p>
         </div>
         <div>
@@ -64,11 +55,11 @@
                 <legend>联系方式</legend>
             </fieldset>
         </div>
-        <div style="padding: 16px">
+        <div style="padding: 16px;text-align: center">
             <!-- 底部固定区域 -->
-            <h3>手机号：</h3>
-            <h3>邮箱：</h3>
-            <h3>地址：</h3>
+            <h3>手机号：<span id="ID-phone"/></h3>
+            <h3>邮箱：<span id="ID-email"/></h3>
+            <h3>地址：<span id="ID-address"/></h3>
         </div>
     </div>
 
@@ -77,7 +68,9 @@
 </div>
 
 
+</script>
 <script src="//cdn.staticfile.org/layui/2.8.10/layui.js"></script>
+<script src="./js/data.js"></script>
 <script>
     // Usage
     layui.use(function () {
@@ -87,6 +80,37 @@
         var element = layui.element;
         var util = layui.util;
         var $ = layui.$;
+
+        let productId = layui.url().search.id;
+
+        let find = data.productList.find(function (value) {
+            return value.id == productId
+        });
+
+        let $carousel = $("#ID-carousel-image-list");
+
+        if (find === undefined || find === null) {
+            layer.msg('商品不存在', {icon: 2});
+            return
+        }
+        console.log(productId);
+        console.log(find);
+
+        $("#ID-phone").text(data.contact.phone)
+        $("#ID-email").text(data.contact.email)
+        $("#ID-address").text(data.contact.address)
+        $("#ID-detail").text(find.detail)
+        $("#ID-price").text(find.price)
+        $("#ID-title").text(find.title)
+
+        find.img.forEach(function (value, index) {
+            $carousel.append(" <div>" +
+                "<img src='" + value + "' class=\"carousel-full-width-image\">\n" +
+                "                </div>");
+
+        })
+
+
         // 渲染 - 图片轮播
         carousel.render({
             elem: '#ID-carousel-demo-image',
@@ -113,12 +137,7 @@
             }
         });
 
-        var flow = layui.flow;
-        // 图片懒加载
-        flow.lazyimg({
-            elem: '#ID-flow-demo-lazyimg img',
-            scrollElem: '#ID-flow-demo-lazyimg' // 一般不用设置，此处只是演示需要。
-        });
+
     });
 </script>
 </body>
